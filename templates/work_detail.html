@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+{% block content %}
+<h1 class="page-header">{{ work.name }}</h1>
+    <p class="text-center text-capitalize">This work is written by {{ work.author }}</p>
+    <p> This work is consist of - {{ work.tcontent }}</p>
+   <p class="date">
+    Published {{ work.publish }} by {{ work.author }}
+    </p>
+{% endblock %}

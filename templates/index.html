@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="row">
+    <div class="col-md-8 pull-left">
+    <div class="page-header text-center">
+<h1>Club 'Conture'</h1>
+    </div>
+
+    <div class="jumbotron" id="feed">
+{#       <a href="{{ backurl }}">Back</a>#}
+        <p>This is test site for my course work, for now index page is empty, but later i will fill it with club news and history</p>
+    </div>
+    </div>
+        {% block feed %}
+            {{ block.super }}
+            {% endblock %}
+{#        {% block feed %}#}
+{#    <div class="col-md-3 pull-right">#}
+{#    <h1>Activity feed</h1>#}
+        </div>
+    </div>
+{#        {% endblock %}#}
+{% endblock %}

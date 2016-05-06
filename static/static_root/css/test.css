@@ -1,0 +1,14 @@
+.test {
+    list-style: none;
+}
+p span
+{
+    display: block;
+}
+#logo{
+    height: 30%;
+    width:30%;
+}
+button a{
+    color:white;
+}

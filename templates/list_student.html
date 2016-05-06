@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+{% load crispy_forms_tags %}
+{% block title %}List of Students{% endblock %}
+{% block content %}
+    <div class="container">
+    <div class="row">
+    <div class="col-md-8">
+    <h1 class='page-header'>List of available students</h1>
+    <p class="text-muted pull-right">Note: Only students</p>
+{% for student in list %}
+    <ul>
+        <li><a href="{% url 'std_d' student.id %}">{{ student.user }}</a></li>
+    </ul>
+    {% endfor %}
+    </div>
+    {% block feed  %}
+        {{ block.super }}
+    {% endblock %}
+    </div>
+    </div>
+{% endblock %}

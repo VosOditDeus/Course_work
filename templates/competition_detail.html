@@ -1,0 +1,70 @@
+{% extends 'index.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="container">
+    <div class="row">
+        <div class="col-md-8">
+    <a  href="{{ backurl }}">Back</a>
+    <h1 class="page-header text-center text-capitalize">{{ comp.name }}</h1>
+    <div class="container-fluid">
+        <div>
+            <p class="pull-left text-center"><span>Started</span><span>{{ comp.begin_date }}</span></p>
+        </div>
+        <div>
+            <p class="pull-right text-center"><span>Ended</span><span>{{ comp.final_date }}</span></p>
+        </div>
+    <div>
+        <img src="{{ media_url }}{{ comp.logo }}" class="center-block img-responsive" id="logo">
+    </div>
+    </div>
+        <div>
+            <h1>City</h1>
+            <p class="">{{ comp.city }}</p>
+        <div>
+            <h2>Description</h2>
+            <p class="">{{ comp.description }}</p>
+        </div>
+        </div>
+            {% if comp.status == 'RUNNING' %}
+        <button class="btn btn-danger" ><a href="">Sing up for contest</a> </button>
+
+        {% else %}
+    {% with comments.count as total_comments %}
+        <h2 class="">
+            {{ total_comments }} comment{{ total_comments|pluralize }}
+        </h2>
+    {% endwith %}
+    {% for comment in comments %}
+        <div class="panel panel-info">
+        <div class="comment panel-heading">
+            <p>
+                <small>Comment {{ forloop.counter }}</small> by {{ comment.name|capfirst }} at
+                {{ comment.created }}
+            </p>
+            </div>
+            <div class="panel-body">
+            {{ comment.body|linebreaks }}
+            </div>
+        </div>
+    {% empty %}
+        <p>There are no comments yet.</p>
+    {% endfor %}
+    {% if new_comment %}
+<h2>Your comment has been added.</h2>
+{% else %}
+<h2 class="text-center">Add a new comment</h2>
+<form action="." method="post">
+{{ comment_form|crispy }}
+{% csrf_token %}
+<p><input type="submit" value="Add comment"></p>
+</form>
+    {% endif %}
+            {% endif %}
+        </div>
+    {% block feed %}
+            {{ block.super }}
+    {% endblock %}
+    </div>
+    </div>
+{% endblock %}
