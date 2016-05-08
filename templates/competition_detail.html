@@ -30,6 +30,27 @@
         <button class="btn btn-danger" ><a href="">Sing up for contest</a> </button>
 
         {% else %}
+                <div>
+                <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Work</th>
+        <th>Place</th>
+      </tr>
+    </thead>
+                    {% for cwork in comp.work_for_competition_set.all  %}
+    <tbody>
+      <tr>
+        <td>{{ cwork.work_name.author }}</td>
+        <td>{{ cwork.work_name }}</td>
+        <td>{{ cwork.place }}</td>
+          {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+
+                </div>
     {% with comments.count as total_comments %}
         <h2 class="">
             {{ total_comments }} comment{{ total_comments|pluralize }}

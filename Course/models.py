@@ -23,11 +23,15 @@ class profile(models.Model):
     bio = models.TextField()
     photo = models.ImageField(upload_to='users/%Y/%m/%d', blank=True, null=True)
     is_student = models.BooleanField(default=False)
+    # def get_absolute_url(self):
+    #     return reverse('student:student_detail', args=[self.user.username])
     def __unicode__(self):
         return "%s" %(self.user)
     @property
     def full_name(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
+
+
 class work(models.Model):
     work = models.FileField(upload_to=upload_location, blank=True, null=True)
     name = models.CharField(max_length=250)
@@ -47,11 +51,15 @@ class work(models.Model):
         work = kwargs['instance']
         storage, path = work.work.storage, work.work.path
         storage.delete(path)
+
+
 class city(models.Model):
     '''Fill with city names, at least.'''
     name = models.CharField(max_length=30)
     def __unicode__(self):
         return '%s' % (self.name)
+
+
 class competition(models.Model):
     RUNNING = 'RUNNING'
     COMPLETED = 'COMPLETED'
@@ -67,13 +75,14 @@ class competition(models.Model):
     created_by = models.ForeignKey(User)
     description = models.CharField(max_length=250, blank=True, null=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=9, default='RUNNING')
-    students = models.ManyToManyField(profile, related_name='part', blank=True, null=True)
+    students = models.ManyToManyField(profile, related_name='participant')
     def __unicode__(self):
         return '%s' %(self.name)
     def duration(self,begin_date,final_date):
         return final_date - begin_date
     def get_absolute_url(self):
         return reverse('competition:competition_detail', args=[self.name]) #rework shit
+
 
 class work_for_competition(models.Model):
     FIRST = '1'
@@ -88,10 +97,17 @@ class work_for_competition(models.Model):
         (OTHERS, 'Other'),
         (TBA, 'TBA')
                     )
-    work_name = models.OneToOneField(work, null=True, blank=True)
-    competition = models.OneToOneField(competition, null=True, blank=True)
+    work_name = models.ForeignKey(work, null=True, blank=True)
+    competition = models.ForeignKey(competition, null=True, blank=True)
     place = models.CharField(choices=PLACE_CHOICES, max_length=6, default='TBA')
-    students = models.ForeignKey(profile)
+    # students = models.ForeignKey(profile)
+
+    class Meta:
+        ordering = ['place']
+    def __unicode__(self):
+        return self.competition.name
+
+
 class Comment(models.Model):
     competition = models.ForeignKey(competition, related_name='comments')
     name = models.CharField(max_length=80)

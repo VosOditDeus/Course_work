@@ -29,6 +29,3 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = profile
         fields = ('bio', 'photo', 'date_of_birth', 'facility')
-
-class SingUpForm(forms.Form):
-        student = forms.CharField

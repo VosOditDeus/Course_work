@@ -161,7 +161,7 @@ def student_list(request):
 def student_detail(request,student_id):
     args = {}
     args.update(csrf(request))
-    student_detail = get_object_or_404(profile, id=student_id)
+    student_detail = get_object_or_404(profile,id=student_id)
     args['student'] = student_detail
     args['user'] = request.user
     args['media_url'] = MEDIA_URL
