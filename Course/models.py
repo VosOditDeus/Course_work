@@ -35,7 +35,7 @@ class profile(models.Model):
 class work(models.Model):
     work = models.FileField(upload_to=upload_location, blank=True, null=True)
     name = models.CharField(max_length=250)
-    publish = models.DateTimeField(default=timezone.now)
+    publish = models.DateTimeField(default=timezone.now,blank=True,null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     photo = models.ImageField(upload_to=upload_location)

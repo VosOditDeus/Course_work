@@ -1,18 +1,19 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context_processors import csrf
+from django.template.defaultfilters import slugify
+
 from Course_work.settings import MEDIA_URL
-from Course.forms import CommentForm, LogInForm, UserRegistrationForm, ProfileEditForm, UserEditForm
+from Course.forms import CommentForm, LogInForm, UserRegistrationForm, ProfileEditForm, UserEditForm , UploadWorkForm
 from .models import competition, work,profile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login
 
 
 def index(request):
-    args={}
+    args = {}
     args.update(csrf(request))
     competition_list = competition.objects.all()
     args['comp'] = competition_list
@@ -35,7 +36,6 @@ def competition_detail(request,comp_id):
             new_comment.competition = competition_detailed
             new_comment.name = request.user.get_full_name()
             new_comment.email = request.user.email
-        #TODO:If reload page with data in form - double save,even if there is no data in form-          double save - solved.
         # Save the comment to the database
             new_comment.save()
             return HttpResponseRedirect(request.META['HTTP_REFERER'])
@@ -76,11 +76,6 @@ def work_detail(request,work_id):
     args['work'] = work_detail
     args['user'] = request.user
     return render_to_response('work_detail.html', args)
-
-def sing_up(request):
-    args = {}
-    args.update(csrf(request))
-    # if request.method =='POST':
 
 def user_login(request):
     args = {}
@@ -166,3 +161,39 @@ def student_detail(request,student_id):
     args['user'] = request.user
     args['media_url'] = MEDIA_URL
     return render_to_response('student_detail.html', args)
+
+
+
+# def sing_up(request,competition):
+#     args = {}
+#     args.update(csrf(request))
+#     if request.method == 'POST':
+#         form = SingUpForm(data=request.POST)
+#         if form.is_valid():
+#             form.student = request.user.profile
+#             form.competition = competition
+#             form.save()
+#             return HttpResponseRedirect(request.META['HTTP_REFERER'])
+#         else:
+#             return HttpResponse('Failed')
+#     else:
+#         form = SingUpForm()
+#         args['form']=form
+#         return render_to_response('sing_up.html',args)
+
+def upload_work(request):
+    args = {}
+    args.update(csrf(request))
+    if request.method == 'POST':
+        work_form = UploadWorkForm(data=request.POST, files=request.FILES)
+        if work_form.is_valid():
+            new_work = work_form.save(commit=False)
+            new_work.author = request.user.profile
+            new_work.slug = slugify(new_work.name)
+            new_work.save()
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+    else:
+        form = UploadWorkForm()
+        args['form'] = form
+        args['user'] = request.user
+        return render_to_response('add_work.html', args)

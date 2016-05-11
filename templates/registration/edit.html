@@ -9,5 +9,6 @@
 {{ profile_form|crispy }}
 {% csrf_token %}
 <p><input type="submit" value="Save changes"></p>
+<p><a href="{% url 'work_add' %}">Add New Work</a></p>
 </form>
 {% endblock %}

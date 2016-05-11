@@ -11,6 +11,7 @@ urlpatterns = patterns('',
                        url(r'^work_detail/(?P<work_id>\d+)/$', 'Course.views.work_detail',                                      name='work_d'),
                        url(r'^competition_list/$', 'Course.views.competition_list', name='comp_l'),
                        #url(r'^login/$', 'Course.views.user_login', name='login'),
+                       url(r'^add_work/$','Course.views.upload_work', name='work_add')
                        )
 if settings.DEBUG == "True":
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

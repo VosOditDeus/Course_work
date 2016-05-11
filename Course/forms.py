@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Comment,profile
+from .models import Comment,profile , work
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
@@ -28,4 +28,15 @@ class UserEditForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = profile
-        fields = ('bio', 'photo', 'date_of_birth', 'facility')
+        fields = ('bio', 'photo', 'date_of_birth', 'facility',)
+#
+# test = profile.work_set
+#
+# class SingUpForm(forms.Form):
+#     student = forms.CharField()
+#     work = forms.ChoiceField(choices=test)
+#     competition = forms.CharField()
+class UploadWorkForm(forms.ModelForm):
+    class Meta:
+        model = work
+        fields = ('name', 'work', 'tcontent', 'photo')
