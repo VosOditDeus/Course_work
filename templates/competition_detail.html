@@ -27,7 +27,13 @@
         </div>
         </div>
             {% if comp.status == 'RUNNING' %}
-        <button class="btn btn-danger" ><a href="">Sing up for contest</a> </button>
+
+<form action="{% url 'sing_up' comp.id %}" method="post">
+{{ sing_up|crispy }}
+    {% csrf_token %}
+<button class="btn btn-danger" type="submit">Ok</button>
+</form>
+
 
         {% else %}
                 <div>

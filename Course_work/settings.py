@@ -142,3 +142,7 @@ STATICFILES_DIRS = (
 )
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+# ABSOLUTE_URL_OVERRIDES = {
+# 'auth.user': lambda u: reverse_lazy('student_detail',
+# args=[u.username])
+# }

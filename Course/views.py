@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse, HttpResponseRedirect
@@ -6,8 +7,8 @@ from django.template.context_processors import csrf
 from django.template.defaultfilters import slugify
 
 from Course_work.settings import MEDIA_URL
-from Course.forms import CommentForm, LogInForm, UserRegistrationForm, ProfileEditForm, UserEditForm , UploadWorkForm
-from .models import competition, work,profile
+from Course.forms import CommentForm, LogInForm, UserRegistrationForm, ProfileEditForm, UserEditForm , UploadWorkForm,MSingUpForm
+from .models import competition, work,profile,work_for_competition
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login
 
@@ -24,11 +25,15 @@ def index(request):
 def competition_detail(request,comp_id):
     args = {}
     args.update(csrf(request))
+    user = request.user
     competition_detailed = get_object_or_404(competition, id=comp_id)
     comments = competition_detailed.comments.filter(active=True)
     if request.method == 'POST':
         # A comment was posted
+
+        sing_up_form = MSingUpForm(request.POST)
         comment_form = CommentForm(data=request.POST)
+
         if comment_form.is_valid():
         # Create Comment object but don't save to database yet
             new_comment = comment_form.save(commit=False)
@@ -38,15 +43,18 @@ def competition_detail(request,comp_id):
             new_comment.email = request.user.email
         # Save the comment to the database
             new_comment.save()
+            sing_up_form.save()
             return HttpResponseRedirect(request.META['HTTP_REFERER'])
     else:
         comment_form = CommentForm()
+        sing_up_form = MSingUpForm()
     args['backurl'] = request.META.get("HTTP_REFERER")
     args['comp'] = competition_detailed
     args['comments'] = comments
     args['comment_form'] = comment_form
     args['media_url'] = MEDIA_URL
     args['user'] = request.user
+    args['sing_up'] = sing_up_form
     return render_to_response('competition_detail.html', args)
 
 def competition_list(request):
@@ -164,22 +172,25 @@ def student_detail(request,student_id):
 
 
 
-# def sing_up(request,competition):
-#     args = {}
-#     args.update(csrf(request))
-#     if request.method == 'POST':
-#         form = SingUpForm(data=request.POST)
-#         if form.is_valid():
-#             form.student = request.user.profile
-#             form.competition = competition
-#             form.save()
-#             return HttpResponseRedirect(request.META['HTTP_REFERER'])
-#         else:
-#             return HttpResponse('Failed')
-#     else:
-#         form = SingUpForm()
-#         args['form']=form
-#         return render_to_response('sing_up.html',args)
+def sing_up(request,comp_id):
+    args = {}
+    args.update(csrf(request))
+    if request.method == 'POST':
+        MSingUpForm.base_fields['work_name'] = forms.ModelChoiceField(queryset=work.objects.filter(author=profile.objects.get(user=request.user)))
+        form = MSingUpForm(request.POST)
+        r = request.POST.get('work_name')
+        print (work.objects.filter(author=profile.objects.get(user=request.user)))
+        if form.is_valid():
+            #TODO: Still bug with non request user works
+            f1 = form.save(commit=False)
+            f1.competition = competition.objects.get(id=comp_id)
+            f1.work_name = work.objects.get(id=r)
+            f1.save()
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+        else:
+            print(form.errors)
+            return HttpResponse('Failed')
+
 
 def upload_work(request):
     args = {}

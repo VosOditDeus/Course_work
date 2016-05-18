@@ -101,7 +101,6 @@ class work_for_competition(models.Model):
     competition = models.ForeignKey(competition, null=True, blank=True)
     place = models.CharField(choices=PLACE_CHOICES, max_length=6, default='TBA')
     # students = models.ForeignKey(profile)
-
     class Meta:
         ordering = ['place']
     def __unicode__(self):
