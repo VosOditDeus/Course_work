@@ -13,7 +13,6 @@
     </div>
     </div>
         {% block feed %}
-            {{ block.super }}
             {% for action in actions %}
                 {% if action.verb == 'have uploaded new work' and action.user != user %}
                     <li><a href="{% url 'student_detail' action.user.id %}">{{ action.user }}</a> {{ action.verb }} <a href="{% url 'work_d' action.target_id %}">{{ action.target.name }}</a></li>
@@ -22,11 +21,9 @@
                 {% endif %}
 {#                <li>{{ action.user }} {{ action.verb }} {{ action.targer }}</li>#}
             {% endfor %}
+
+
             {% endblock %}
-{#        {% block feed %}#}
-{#    <div class="col-md-3 pull-right">#}
-{#    <h1>Activity feed</h1>#}
         </div>
     </div>
-{#        {% endblock %}#}
 {% endblock %}
