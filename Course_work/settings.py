@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #My apps
     'Course',
     'accounts',
+    'actions',
 ]
 
 MIDDLEWARE_CLASSES = [

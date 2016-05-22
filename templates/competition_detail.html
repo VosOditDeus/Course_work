@@ -27,13 +27,15 @@
         </div>
         </div>
             {% if comp.status == 'RUNNING' %}
-
+{%  if user.profile in comp.students.all %}
+<p>You have already registered in this competition,please wait for results(later you will be granted a "Unsing up"</p>
+    {% else %}
 <form action="{% url 'sing_up' comp.id %}" method="post">
 {{ sing_up|crispy }}
     {% csrf_token %}
 <button class="btn btn-danger" type="submit">Ok</button>
 </form>
-
+{% endif %}
 
         {% else %}
                 <div>

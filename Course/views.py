@@ -1,3 +1,4 @@
+from ORBit.CORBA import completion_status
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -5,7 +6,7 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context_processors import csrf
 from django.template.defaultfilters import slugify
-
+from actions.utils import *
 from Course_work.settings import MEDIA_URL
 from Course.forms import CommentForm, LogInForm, UserRegistrationForm, ProfileEditForm, UserEditForm , UploadWorkForm,MSingUpForm
 from .models import competition, work,profile,work_for_competition
@@ -17,9 +18,14 @@ def index(request):
     args = {}
     args.update(csrf(request))
     competition_list = competition.objects.all()
+    if request.user in  profile.objects.all():
+        action_list = Action.objects.exclude(user=request.user)[:10]
+    else:
+        action_list = Action.objects.all()[:10]
     args['comp'] = competition_list
     args['backurl'] = request.META.get("HTTP_REFERER")
     args['user'] = request.user
+    args['actions'] = action_list
     return render_to_response('index.html', args)
 
 def competition_detail(request,comp_id):
@@ -124,6 +130,7 @@ def registration(request):
             #Create profile for User
             profile.objects.create(user=new_user)
             args['new_user'] = new_user
+            create_action(request.user.get_full_name(), 'have just registered!')
             return render_to_response('registration/register_done.html', args)
     else:
         user_form = UserRegistrationForm()
@@ -142,12 +149,12 @@ def edit(request):
             user_form.save()
             profile_form.save()
             messages.success(request, 'Profile Successfully updated')
+            create_action(request.user, ' has edited his profile')
         else:
             messages.error(request, 'Error updating your profile')
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
-
     args['user_form'] = user_form
     args['profile_form'] = profile_form
     args['user'] = request.user
@@ -175,20 +182,21 @@ def student_detail(request,student_id):
 def sing_up(request,comp_id):
     args = {}
     args.update(csrf(request))
+    choosen_competiion = competition.objects.get(id=comp_id)
     if request.method == 'POST':
         MSingUpForm.base_fields['work_name'] = forms.ModelChoiceField(queryset=work.objects.filter(author=profile.objects.get(user=request.user)))
         form = MSingUpForm(request.POST)
         r = request.POST.get('work_name')
-        print (work.objects.filter(author=profile.objects.get(user=request.user)))
         if form.is_valid():
             #TODO: Still bug with non request user works
             f1 = form.save(commit=False)
-            f1.competition = competition.objects.get(id=comp_id)
+            f1.competition = choosen_competiion
             f1.work_name = work.objects.get(id=r)
             f1.save()
+            choosen_competiion.students.add(request.user.profile)
+            create_action(request.user, 'singed up on ', f1.competition)
             return HttpResponseRedirect(request.META['HTTP_REFERER'])
         else:
-            print(form.errors)
             return HttpResponse('Failed')
 
 
@@ -202,7 +210,8 @@ def upload_work(request):
             new_work.author = request.user.profile
             new_work.slug = slugify(new_work.name)
             new_work.save()
-            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+            create_action(request.user, 'have uploaded new work', new_work)
+            return HttpResponseRedirect('/')
     else:
         form = UploadWorkForm()
         args['form'] = form
