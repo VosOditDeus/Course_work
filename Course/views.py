@@ -198,7 +198,7 @@ def sing_up(request,comp_id):
             return HttpResponseRedirect(request.META['HTTP_REFERER'])
         else:
             return HttpResponse('Failed')
-
+# sadl;askdlas
 
 def upload_work(request):
     args = {}
