@@ -35,7 +35,7 @@ class ProfileEditForm(forms.ModelForm):
 class UploadWorkForm(forms.ModelForm):
     class Meta:
         model = work
-        fields = ('name', 'work', 'tcontent', 'photo')
+        fields = ('name', 'work', 'theme',)
 # class SingUpForm(forms.Form):
 #     work = forms.ModelChoiceField(queryset=work.objects.filter())
 #     competition = forms.HiddenInput()

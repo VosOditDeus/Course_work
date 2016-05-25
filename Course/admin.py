@@ -17,7 +17,7 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 
 class WorkAdmin(admin.ModelAdmin):
-    list_display = ['name', 'created', 'updated', 'photo', 'slug', 'author']
+    list_display = ['name', 'created', 'updated', 'slug', 'author']
     list_filter = ('name', 'created', 'author')
     search_fields = ('name', 'created')
     date_hierarchy = 'created'

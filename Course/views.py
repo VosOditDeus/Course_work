@@ -1,4 +1,3 @@
-from ORBit.CORBA import completion_status
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -198,7 +197,7 @@ def sing_up(request,comp_id):
             return HttpResponseRedirect(request.META['HTTP_REFERER'])
         else:
             return HttpResponse('Failed')
-# sadl;askdlas
+
 
 def upload_work(request):
     args = {}

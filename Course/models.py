@@ -35,22 +35,21 @@ class profile(models.Model):
 class work(models.Model):
     work = models.FileField(upload_to=upload_location, blank=True, null=True)
     name = models.CharField(max_length=250)
-    publish = models.DateTimeField(default=timezone.now,blank=True,null=True)
+    publish = models.DateTimeField(default=timezone.now, blank=True,null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    photo = models.ImageField(upload_to=upload_location)
-    tcontent = models.TextField()
+    theme = models.CharField(max_length=255)
     author = models.ForeignKey(profile)
-    slug = models.SlugField(unique_for_date='created', max_length=250,null=True, blank=True)
+    slug = models.SlugField(unique_for_date='created', max_length=250, null=True, blank=True)
     def get_absolute_url(self):
         return reverse('work:work_detail', args=[self.name]) #rework shit
     def __unicode__(self):
         return "%s" %(self.name)
-    @receiver(pre_delete,sender=work)
-    def work_post_delete_handler(sender, **kwargs):
-        work = kwargs['instance']
-        storage, path = work.work.storage, work.work.path
-        storage.delete(path)
+@receiver(pre_delete, sender=work)
+def work_post_delete_handler(sender, **kwargs):
+    work = kwargs['instance']
+    storage, path = work.work.storage, work.work.path
+    storage.delete(path)
 
 
 class city(models.Model):
@@ -70,7 +69,7 @@ class competition(models.Model):
     begin_date = models.DateField()
     final_date = models.DateField()
     name = models.CharField(max_length=50)
-    logo = models.ImageField(upload_to=upload_location2)
+    logo = models.ImageField(upload_to=upload_location)
     city = models.ForeignKey(city, blank=True, null=True)
     created_by = models.ForeignKey(User)
     description = models.CharField(max_length=250, blank=True, null=True)

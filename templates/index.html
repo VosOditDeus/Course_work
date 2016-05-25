@@ -18,7 +18,7 @@
                 {% if action.verb == 'have uploaded new work' and action.user != user %}
                     <li><a href="{% url 'student_detail' action.user.id %}">{{ action.user }}</a> {{ action.verb }} <a href="{% url 'work_d' action.target_id %}">{{ action.target.name }}</a> -<em>{{ action.created|timesince }}</em></li>
                     {% elif action.verb == 'singed up on ' and action.user != user %}
-                    <li>{{ action.user }} {{ action.verb }} <a href="{% url 'detail' action.target_id %}">{{ action.target.name }}</a> -<em>{{ action.created|timesince }}</em></li>
+                    <li><a href="{% url 'student_detail' action.user.id %}">{{ action.user }}</a> {{ action.verb }} <a href="{% url 'detail' action.target_id %}">{{ action.target.name }}</a> -<em>{{ action.created|timesince }}</em></li>
                 {% endif %}
 {#                <li>{{ action.user }} {{ action.verb }} {{ action.targer }}</li>#}
             {% endfor %}
