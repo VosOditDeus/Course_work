@@ -25,7 +25,7 @@
     <h2>Works:</h2>
     {% for work in student.work_set.all %}
         <ul class="test">
-    <li><a href="{{ media_url }}{{ work.name }}">{{ work.name }}</a></li>
+    <li><a href="{% url 'work_d' work.slug %}">{{ work.name }}</a></li>
 {#        #TODO: LEARN HOW TO DOWNLOAD FILE #}
         </ul>
     {% endfor %}

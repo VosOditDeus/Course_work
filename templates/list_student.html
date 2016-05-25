@@ -9,7 +9,7 @@
     <p class="text-muted pull-right">Note: Only students</p>
 {% for student in list %}
     <ul>
-        <li><a href="{% url 'student_detail' student.id %}">{{ student.user }}</a></li>
+        <li><a href="{% url 'student_detail' student.user %}">{{ student.user }}</a></li>
     </ul>
     {% endfor %}
     </div>

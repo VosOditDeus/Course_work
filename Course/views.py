@@ -82,10 +82,10 @@ def competition_list(request):
     args['user'] = request.user
     return render_to_response('competition_list.html', args)
 
-def work_detail(request,work_id):
+def work_detail(request,slug):
     args = {}
     args.update(csrf(request))
-    work_detail = work.objects.get(pk=work_id)
+    work_detail = work.objects.get(slug=slug)
     args['work'] = work_detail
     args['user'] = request.user
     return render_to_response('work_detail.html', args)
@@ -167,10 +167,11 @@ def student_list(request):
     args['user'] = request.user
     return render_to_response('list_student.html', args)
 
-def student_detail(request,student_id):
+
+def student_detail(request, user):
     args = {}
     args.update(csrf(request))
-    student_detail = get_object_or_404(profile,id=student_id)
+    student_detail = get_object_or_404(profile, user__username=user)
     args['student'] = student_detail
     args['user'] = request.user
     args['media_url'] = MEDIA_URL

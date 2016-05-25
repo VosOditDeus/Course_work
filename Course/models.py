@@ -4,8 +4,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
-from django.db.models.signals import pre_delete
-from django.dispatch.dispatcher import receiver
 
 
 def upload_location(instance, filename):
@@ -23,10 +21,12 @@ class profile(models.Model):
     bio = models.TextField()
     photo = models.ImageField(upload_to='users/%Y/%m/%d', blank=True, null=True)
     is_student = models.BooleanField(default=False)
-    # def get_absolute_url(self):
-    #     return reverse('student:student_detail', args=[self.user.username])
+    def get_absolute_url(self):
+        return reverse('student:student_detail', args=[self.user.username])
+
     def __unicode__(self):
         return "%s" %(self.user)
+
     @property
     def full_name(self):
         return "%s %s" % (self.user.first_name, self.user.last_name)
@@ -42,14 +42,9 @@ class work(models.Model):
     author = models.ForeignKey(profile)
     slug = models.SlugField(unique_for_date='created', max_length=250, null=True, blank=True)
     def get_absolute_url(self):
-        return reverse('work:work_detail', args=[self.name]) #rework shit
+        return reverse('work:work_detail', args=[self.slug])
     def __unicode__(self):
         return "%s" %(self.name)
-@receiver(pre_delete, sender=work)
-def work_post_delete_handler(sender, **kwargs):
-    work = kwargs['instance']
-    storage, path = work.work.storage, work.work.path
-    storage.delete(path)
 
 
 class city(models.Model):
