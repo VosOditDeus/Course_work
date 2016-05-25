@@ -17,21 +17,21 @@ def index(request):
     args = {}
     args.update(csrf(request))
     competition_list = competition.objects.all()
-    if request.user in  profile.objects.all():
+    if request.user in profile.objects.all():
         action_list = Action.objects.exclude(user=request.user)[:10]
     else:
-        action_list = Action.objects.all()[:10]
+        action_list = Action.objects.all().order_by('-pk')[:10]
     args['comp'] = competition_list
     args['backurl'] = request.META.get("HTTP_REFERER")
     args['user'] = request.user
     args['actions'] = action_list
     return render_to_response('index.html', args)
 
-def competition_detail(request,comp_id):
+def competition_detail(request,slug):
     args = {}
     args.update(csrf(request))
     user = request.user
-    competition_detailed = get_object_or_404(competition, id=comp_id)
+    competition_detailed = get_object_or_404(competition, slug=slug)
     comments = competition_detailed.comments.filter(active=True)
     if request.method == 'POST':
         # A comment was posted

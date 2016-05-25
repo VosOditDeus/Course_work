@@ -7,12 +7,13 @@ class CAdmin(admin.TabularInline):
 
 
 class CompetitionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'logo', 'begin_date', 'final_date', 'status', 'city']
+    list_display = ['name', 'logo', 'begin_date', 'final_date', 'status', 'city','slug']
     empty_value_display = '-empty-'
     list_filter = ('name', 'begin_date', 'final_date')
     search_fields = ('name',)
     date_hierarchy = 'begin_date'
     ordering = ['begin_date', 'final_date', 'name']
+    prepopulated_fields = {'slug': ('name',)}
     inlines = [CAdmin]
 
 

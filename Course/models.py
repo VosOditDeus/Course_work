@@ -70,6 +70,7 @@ class competition(models.Model):
     description = models.CharField(max_length=250, blank=True, null=True)
     status = models.CharField(choices=STATUS_CHOICES, max_length=9, default='RUNNING')
     students = models.ManyToManyField(profile, related_name='participant')
+    slug = models.SlugField(unique=True,max_length=250, null=True, blank=True )
     def __unicode__(self):
         return '%s' %(self.name)
     def duration(self,begin_date,final_date):
