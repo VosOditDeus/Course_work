@@ -38,7 +38,7 @@ class work(models.Model):
     publish = models.DateTimeField(default=timezone.now, blank=True,null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    theme = models.CharField(max_length=255)
+    theme = models.CharField(max_length=255,default='')
     author = models.ForeignKey(profile)
     slug = models.SlugField(unique_for_date='created', max_length=250, null=True, blank=True)
     def get_absolute_url(self):

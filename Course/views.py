@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template.context import RequestContext
 from django.template.context_processors import csrf
 from django.template.defaultfilters import slugify
 from actions.utils import *
@@ -17,20 +18,13 @@ def index(request):
     args = {}
     args.update(csrf(request))
     competition_list = competition.objects.all()
-    if request.user in profile.objects.all():
-        action_list = Action.objects.exclude(user=request.user)[:10]
-    else:
-        action_list = Action.objects.all().order_by('-pk')[:10]
     args['comp'] = competition_list
     args['backurl'] = request.META.get("HTTP_REFERER")
-    args['user'] = request.user
-    args['actions'] = action_list
-    return render_to_response('index.html', args)
+    return render_to_response('index.html', args, context_instance=RequestContext(request))
 
 def competition_detail(request,slug):
     args = {}
     args.update(csrf(request))
-    user = request.user
     competition_detailed = get_object_or_404(competition, slug=slug)
     comments = competition_detailed.comments.filter(active=True)
     if request.method == 'POST':
@@ -58,9 +52,8 @@ def competition_detail(request,slug):
     args['comments'] = comments
     args['comment_form'] = comment_form
     args['media_url'] = MEDIA_URL
-    args['user'] = request.user
     args['sing_up'] = sing_up_form
-    return render_to_response('competition_detail.html', args)
+    return render_to_response('competition_detail.html', args, context_instance=RequestContext(request))
 
 def competition_list(request):
     args = {}
@@ -79,16 +72,14 @@ def competition_list(request):
     args['compl'] = competition_list
     args['page'] = page
     args['competitions'] = competitions
-    args['user'] = request.user
-    return render_to_response('competition_list.html', args)
+    return render_to_response('competition_list.html', args, context_instance=RequestContext(request))
 
 def work_detail(request,slug):
     args = {}
     args.update(csrf(request))
     work_detail = work.objects.get(slug=slug)
     args['work'] = work_detail
-    args['user'] = request.user
-    return render_to_response('work_detail.html', args)
+    return render_to_response('work_detail.html', args, context_instance=RequestContext(request))
 
 def user_login(request):
     args = {}
@@ -111,7 +102,7 @@ def user_login(request):
         form = LogInForm()
     args['form'] = form
 
-    return render_to_response('login.html', args)
+    return render_to_response('login.html', args, context_instance=RequestContext(request))
 
 def registration(request):
     args = {}
@@ -134,7 +125,7 @@ def registration(request):
     else:
         user_form = UserRegistrationForm()
     args['user_form'] = user_form
-    return render_to_response('registration/register.html', args)
+    return render_to_response('registration/register.html', args, context_instance=RequestContext(request))
 
 @login_required
 def edit(request):
@@ -156,16 +147,14 @@ def edit(request):
         profile_form = ProfileEditForm(instance=request.user.profile)
     args['user_form'] = user_form
     args['profile_form'] = profile_form
-    args['user'] = request.user
-    return render_to_response('registration/edit.html', args)
+    return render_to_response('registration/edit.html', args, context_instance=RequestContext(request))
 
 def student_list(request):
     args = {}
     args.update(csrf(request))
     student_list = profile.objects.all().filter(is_student=True)
     args['list'] = student_list
-    args['user'] = request.user
-    return render_to_response('list_student.html', args)
+    return render_to_response('list_student.html', args, context_instance=RequestContext(request))
 
 
 def student_detail(request, user):
@@ -173,9 +162,8 @@ def student_detail(request, user):
     args.update(csrf(request))
     student_detail = get_object_or_404(profile, user__username=user)
     args['student'] = student_detail
-    args['user'] = request.user
     args['media_url'] = MEDIA_URL
-    return render_to_response('student_detail.html', args)
+    return render_to_response('student_detail.html', args, context_instance=RequestContext(request))
 
 
 
@@ -215,5 +203,4 @@ def upload_work(request):
     else:
         form = UploadWorkForm()
         args['form'] = form
-        args['user'] = request.user
-        return render_to_response('add_work.html', args)
+        return render_to_response('add_work.html', args, context_instance=RequestContext(request))
