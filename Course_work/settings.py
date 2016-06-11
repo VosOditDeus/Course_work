@@ -148,3 +148,4 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # 'auth.user': lambda u: reverse_lazy('student_detail',
 # args=[u.username])
 # }
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

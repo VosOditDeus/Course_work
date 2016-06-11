@@ -12,7 +12,7 @@ from Course.forms import CommentForm, LogInForm, UserRegistrationForm, ProfileEd
 from .models import competition, work,profile,work_for_competition
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login
-
+from .tasks import work_uploaded
 
 def index(request):
     args = {}
@@ -199,6 +199,7 @@ def upload_work(request):
             new_work.slug = slugify(new_work.name)
             new_work.save()
             create_action(request.user, 'have uploaded new work', new_work)
+            work_uploaded.delay(new_work.id)
             return HttpResponseRedirect('/')
     else:
         form = UploadWorkForm()
