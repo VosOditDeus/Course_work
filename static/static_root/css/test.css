@@ -12,3 +12,6 @@ p span
 button a{
     color:white;
 }
+.languages li{
+    display: inline;
+}

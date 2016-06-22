@@ -17,9 +17,12 @@ from django.conf.urls import url, include,patterns
 from django.contrib import admin
 import settings
 from django.conf.urls.static import static
-urlpatterns = patterns('',
+from django.conf.urls.i18n import i18n_patterns
+
+urlpatterns = i18n_patterns('',
     url(r'^accounts/', include('accounts.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^rosetta/', include('rosetta.urls')),
     url(r'^', include('Course.urls')),
                        )
 if settings.DEBUG:

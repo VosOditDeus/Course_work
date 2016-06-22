@@ -1,20 +1,19 @@
 from django import forms
 from django.contrib.auth.models import User
-
 from .models import Comment,profile , work, work_for_competition
-
+from django.utils.translation import gettext_lazy as _
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('body',)
 class LogInForm(forms.Form):
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    username = forms.CharField(label=_('Username'))
+    password = forms.CharField(label=_('Password'),widget=forms.PasswordInput)
 
 class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(label='Password',widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Repeat password',widget=forms.PasswordInput)
+    password = forms.CharField(label=_('Password'), widget=forms.PasswordInput)
+    password2 = forms.CharField(label=_('Repeat password') ,widget=forms.PasswordInput)
     class Meta:
         model = User
         fields = ('username', 'first_name', 'email')
